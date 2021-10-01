@@ -51,7 +51,6 @@ class AuthController implements Controller {
     }
 
     private signupUser = async (req: Request, res: Response, next: NextFunction) => {
-        console.log(req);
         const saltRounds = 10;
         const userBody = req.body;
         
@@ -73,6 +72,7 @@ class AuthController implements Controller {
         }else{
             res.json({error: "User with this email already exists"});
         }
+
     }
 
     private makeToken(user: IUser) {

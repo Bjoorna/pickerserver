@@ -2,7 +2,8 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 
-import AuthController from './controllers/auth.controller'
+import AuthController from './controllers/auth.controller';
+import TeamController from './controllers/team.controller';
 
 
 class App{
@@ -11,13 +12,16 @@ class App{
     constructor(){
         this.app = express();
         this.connectToDB();
-        this.initControllers();
         this.initializeMiddleware();
+        this.initControllers();
     }
 
     initControllers(){
         const authController = new AuthController();
         this.app.use('/', authController.router);
+
+        const teamController = new TeamController();
+        this.app.use('/', teamController.router);
     }
 
     public listen(){
@@ -29,8 +33,8 @@ class App{
     }
 
     private initializeMiddleware(){
+        this.app.use(express.json());
         this.app.use(cors());
-
     }
 
     private connectToDB(){
