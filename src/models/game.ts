@@ -6,17 +6,18 @@ export interface IGame{
     hometeam: ObjectId,
     awayteam: ObjectId,
     week: number,
-    spread?: string,
-    result?: Array<number>
+    spread: number | null
+    result: Array<number>,
+    favorite: ObjectId | null
 }
 
 const gameSchema = new Schema<IGame>({
-
     hometeam: {type: Schema.Types.ObjectId, ref: 'Team'},
     awayteam: {type: Schema.Types.ObjectId, ref: 'Team'},
     week: {type: Number, required: true},
-    spread: {type: String},
-    result:[{type: Number}]
+    spread: {type: Number, default: null},
+    result:[{type: Number, required: true}],
+    favorite: {type: Schema.Types.ObjectId, ref: 'Team', default: null}
 });
 
 export const Game = model<IGame>("Game", gameSchema);

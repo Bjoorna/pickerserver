@@ -4,6 +4,7 @@ import cors from 'cors';
 
 import AuthController from './controllers/auth.controller';
 import TeamController from './controllers/team.controller';
+import GameController from './controllers/game.controller';
 
 
 class App{
@@ -22,6 +23,9 @@ class App{
 
         const teamController = new TeamController();
         this.app.use('/', teamController.router);
+
+        const gameController = new GameController();
+        this.app.use('/', gameController.router);
     }
 
     public listen(){
