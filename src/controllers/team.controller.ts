@@ -27,9 +27,7 @@ class TeamController implements Controller{
 
     private addTeam = async (req: Request, res: Response, next: NextFunction) => {
 
-        console.log(req.body);
         const teamData = req.body;
-
         const teamExists = await Team.findOne({name: teamData.name});
 
         if(!teamExists){
