@@ -61,9 +61,7 @@ class AuthController implements Controller {
                 name: userBody.name,
                 email: userBody.email,
                 password: hashedpassword,
-                height: userBody.height,
-                weight: userBody.weight,
-                dob: userBody.dob
+                predictions: []
             });
 
             const token = this.makeToken(newUser);
@@ -78,7 +76,9 @@ class AuthController implements Controller {
     private makeToken(user: IUser) {
         const token = jwt.sign({
             userID: user._id,
-            email: user.email},
+            email: user.email,
+            isAdmin: user.isAdmin
+            },
             process.env.JWT_SECRET as string,
             {expiresIn: '1h'}
             );

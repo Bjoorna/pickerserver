@@ -5,6 +5,7 @@ import cors from 'cors';
 import AuthController from './controllers/auth.controller';
 import TeamController from './controllers/team.controller';
 import GameController from './controllers/game.controller';
+import UserController from './controllers/user.controller';
 
 
 class App{
@@ -26,6 +27,9 @@ class App{
 
         const gameController = new GameController();
         this.app.use('/', gameController.router);
+
+        const userController = new UserController();
+        this.app.use('/', userController.router);
     }
 
     public listen(){
