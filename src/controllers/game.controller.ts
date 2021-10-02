@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response, Router } from "express";
+import { Mongoose, ObjectId } from "mongoose";
 import Controller from "../interfaces/controller.interface";
 // import authMiddleware from "../middleware/auth.middleware";
 import { Game, IGame } from "../models/game";
+import { ITeam } from "../models/team";
 
 class GameController implements Controller{
 
@@ -29,6 +31,25 @@ class GameController implements Controller{
 
         // get game by week
         this.router.get(`${this.path}/week/:week`, this.getGamesByWeek); 
+        //get game by teamname
+        this.router.post(`${this.path}/team`, this.getGamesByTeamName); 
+
+    }
+
+    private getGamesByTeamName= async (req: Request, res: Response, next: NextFunction) => {
+
+        // const team = req.params.team;
+        const team = req.body;
+        // const team = Mongoose.Types.ObjectId(req.params.team);
+        const games = await Game.find(
+            {$or:[
+                {awayteam: team},
+                {hometeam: team}
+        ]}).populate("hometeam").populate("awayteam").populate("favorite");
+
+        console.log(games);
+
+        res.json({payload: games, message: "Games"});
     }
 
     private getGamesByWeek = async (req: Request, res: Response, next: NextFunction) => {
