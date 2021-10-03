@@ -19,7 +19,9 @@ class UserController implements Controller {
     private initializeRoutes(){
         this.router.get(`${this.path}/:id`, this.getUser);
 
-        this.router.post(`${this.path}/:id/addprediction`, authMiddleware, this.addPrediction);
+        this.router.get(`${this.path}/predictions/:id`, this.getUserPredictions);
+
+        this.router.post(`${this.path}/addprediction/:id`, authMiddleware, this.addPrediction);
     }
 
     private addPrediction = async (req: Request, res: Response, next: NextFunction) => {
@@ -46,6 +48,19 @@ class UserController implements Controller {
         }
     }
 
+    private getUserPredictions = async (req: Request, res: Response, next: NextFunction) => {
+        const userID = req.params.id;
+
+        const user = await User.findById(userID).populate("predictions");
+
+        if(user){
+            let predictions = user.predictions;
+            console.log(predictions);
+            res.json({payload: predictions});
+        }else{
+            res.json({error: "Error"});
+        }
+    }
 
     private getUser = async (req: Request, res: Response, next: NextFunction) => {
 
