@@ -20,6 +20,12 @@ class UserController implements Controller {
         // getuser
         this.router.get(`${this.path}/:id`, this.getUser);
 
+        // get all users
+        this.router.get(`${this.path}`, this.getUsers);
+
+        // finduser by name
+        this.router.post(`${this.path}/find`, this.findUserByName);
+
         // edit user
         this.router.put(`${this.path}/:id`, authMiddleware, this.updateUser);
 
@@ -27,6 +33,8 @@ class UserController implements Controller {
         this.router.get(`${this.path}/predictions/:id`, this.getUserPredictions);
         this.router.put(`${this.path}/predictions/:id`, authMiddleware, this.updatePrediction);
         this.router.post(`${this.path}/predictions/:id`, authMiddleware, this.addPrediction);
+        this.router.delete(`${this.path}/predictions/:id`, authMiddleware, this.deletePrediction);
+
     }
 
     private updateUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -48,13 +56,34 @@ class UserController implements Controller {
             }else{
                 res.json({error: "Error when saving user."});
             }
-            
         }else{
             res.json({error: "Could not find user."});
         }
-
     }
 
+    private getUsers = async (req: Request, res: Response, next: NextFunction) => {
+
+        const users = await User.find().select("-password");
+        if(users){
+            res.json({payload: users});
+        }else{
+            res.json({error: "Error when finding users"});
+
+        }
+    }
+
+    private deletePrediction = async (req: Request, res: Response, next: NextFunction) => {
+
+        const predictionId = req.params.id;
+
+        const deletePred = await Prediction.findByIdAndDelete(predictionId);
+        if(deletePred){
+            res.json({message: "Prediction deleted", payload: deletePred});
+        }else{
+            res.json({error: "Error when removing prediction"});
+        }
+    }
+    
     private addPrediction = async (req: Request, res: Response, next: NextFunction) => {
 
         const userId = req.params.id;
@@ -98,9 +127,7 @@ class UserController implements Controller {
         }else{
             res.json({error: "Error"});
         }
-
     }
-
 
     private getUserPredictions = async (req: Request, res: Response, next: NextFunction) => {
         const userID = req.params.id;
@@ -128,6 +155,10 @@ class UserController implements Controller {
         }else{
             res.json({error: "Error"});
         }
+    }
+
+    private findUserByName = async (req: Request, res: Response, next: NextFunction) => {
+
 
     }
         

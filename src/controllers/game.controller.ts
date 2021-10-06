@@ -132,11 +132,10 @@ class GameController implements Controller{
         const id = req.params.id;
         const deletedGame = await Game.findByIdAndDelete(id);
 
-        console.log(deletedGame);
         if(deletedGame){
             res.json({message: "Game Deleted"});
         }else{
-            res.json({message: "Game Did not exist."});
+            res.json({error: "Game Did not exist."});
         }
     }
 
