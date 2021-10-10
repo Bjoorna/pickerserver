@@ -6,6 +6,7 @@ export interface IUser {
     email: string,
     predictions: Array<ObjectId>,
     isAdmin: boolean,
+    friends: Array<ObjectId>,
     password?: string
 }
 
@@ -14,6 +15,7 @@ const userSchema = new Schema<IUser>({
     email: {type: String, required: true},
     password: {type: String, required: true},
     predictions: [{type: Schema.Types.ObjectId, ref:'Prediction'}],
+    friends: [{type: Schema.Types.ObjectId, ref: "User"}],
     isAdmin: {type: Boolean, default: false}
 });
 

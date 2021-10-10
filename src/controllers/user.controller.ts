@@ -29,13 +29,23 @@ class UserController implements Controller {
         // edit user
         this.router.put(`${this.path}/:id`, authMiddleware, this.updateUser);
 
+        // add friend
+        this.router.post(`${this.path}/addfriend`, authMiddleware, this.addFriend);
+
+        // get friendlist
+        this.router.get(`${this.path}/:id/friends`, authMiddleware, this.getFriends);
+        // this.router.get(`${this.path}/:id/friends`, this.getFriends);
+
+
 
         this.router.get(`${this.path}/predictions/:id`, this.getUserPredictions);
         this.router.put(`${this.path}/predictions/:id`, authMiddleware, this.updatePrediction);
         this.router.post(`${this.path}/predictions/:id`, authMiddleware, this.addPrediction);
         this.router.delete(`${this.path}/predictions/:id`, authMiddleware, this.deletePrediction);
-
     }
+
+    
+
 
     private updateUser = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -83,7 +93,7 @@ class UserController implements Controller {
             res.json({error: "Error when removing prediction"});
         }
     }
-    
+
     private addPrediction = async (req: Request, res: Response, next: NextFunction) => {
 
         const userId = req.params.id;
@@ -107,6 +117,45 @@ class UserController implements Controller {
             res.json({error: "Error when saving prediction"});
         }
     }
+
+    private addFriend = async (req: Request, res: Response, next: NextFunction) => {
+
+        const friendID = req.body.friendID;
+        const userID = req.body.userID;
+
+        const user = await User.findByIdAndUpdate(userID, {$push: {friends: friendID}});
+        console.log(user);
+
+        if(user){
+            res.json({message: "Friend Added"});
+        }else{
+            res.json({error: "Error when adding friend"});
+        }
+    }
+
+    private getFriends = async (req: Request, res: Response, next: NextFunction) => {
+        const userID = req.params.id;
+        const user = await User.findById(userID);
+
+        // const user = await User.findById(userID).populate("friends").select("-password -isAdmin -email -friends");
+
+        // console.log(user);
+
+        if(user){
+            
+            const getFriends =  await Promise.all(
+                user.friends.map(friend => User.findById(friend).select("-password -friends -email -isAdmin")
+            ));
+
+            console.log(getFriends);
+    
+            res.json({payload: getFriends, message: "Friends"});
+        }else{
+            res.json({error: "Error when getting friends."})
+        }
+
+    }
+
 
     private updatePrediction = async (req: Request, res: Response, next: NextFunction) => {
         const predictionId = req.params.id;
@@ -159,7 +208,20 @@ class UserController implements Controller {
 
     private findUserByName = async (req: Request, res: Response, next: NextFunction) => {
 
+        const nameSearch = req.body.name;
 
+        const query = new RegExp(nameSearch, 'i');
+        try{
+            const names = await User.find({name: {$regex: query}}).select("-password -email -predictions -isAdmin");
+            if(names){
+                res.json({payload: names});
+            }else{
+                res.json({message: "Could not find with that name"});
+            }
+        }catch(e){
+            res.json({error: e});
+        }
+        
     }
         
 
