@@ -34,9 +34,6 @@ class UserController implements Controller {
 
         // get friendlist
         this.router.get(`${this.path}/:id/friends`, authMiddleware, this.getFriends);
-        // this.router.get(`${this.path}/:id/friends`, this.getFriends);
-
-
 
         this.router.get(`${this.path}/predictions/:id`, this.getUserPredictions);
         this.router.put(`${this.path}/predictions/:id`, authMiddleware, this.updatePrediction);
@@ -136,10 +133,6 @@ class UserController implements Controller {
     private getFriends = async (req: Request, res: Response, next: NextFunction) => {
         const userID = req.params.id;
         const user = await User.findById(userID);
-
-        // const user = await User.findById(userID).populate("friends").select("-password -isAdmin -email -friends");
-
-        // console.log(user);
 
         if(user){
             

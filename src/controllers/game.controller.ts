@@ -23,7 +23,7 @@ class GameController implements Controller{
         this.router.get(`${this.path}`, this.getGames);
 
         // get game by id
-        this.router.get(`${this.path}/:id`);
+        this.router.get(`${this.path}/:id`, this.getGameByID);
         // edit game
         this.router.put(`${this.path}/:id`, this.updateGame);
         // delete spesific game by id
@@ -33,10 +33,20 @@ class GameController implements Controller{
         this.router.get(`${this.path}/week/:week`, this.getGamesByWeek); 
         //get game by teamname
         this.router.post(`${this.path}/team`, this.getGamesByTeamName); 
-
     }
 
-    private getGamesByTeamName= async (req: Request, res: Response, next: NextFunction) => {
+    private getGameByID = async (req: Request, res: Response, next: NextFunction) => {
+        const gameID = req.params.id;
+
+        const game = await Game.findById(gameID).populate("hometeam").populate("awayteam").populate("favorite");
+        if(game){
+            res.json({payload: game});
+        }else{
+            res.json({error: "Error when finding game"});
+        }
+    }
+
+    private getGamesByTeamName = async (req: Request, res: Response, next: NextFunction) => {
 
         // const team = req.params.team;
         const team = req.body;
@@ -68,7 +78,6 @@ class GameController implements Controller{
     private addGame = async (req: Request, res: Response, next: NextFunction) => {
 
         const gameInfo = req.body;
-        console.log(gameInfo);
 
         const newGame: IGame = await Game.create({
             hometeam: gameInfo.hometeam,
@@ -87,10 +96,8 @@ class GameController implements Controller{
         const gameId = req.params.id;
 
         const gameUpdates = req.body;
-        console.log(gameUpdates);
-
         try{
-            const game = await Game.findById(gameId);
+            const game = await Game.findById(gameId).populate("hometeam").populate("awayteam").populate("favorite");
 
             if(game){
                 game.hometeam = gameUpdates.hometeam;
@@ -103,7 +110,7 @@ class GameController implements Controller{
                 const savedGame = await game.save();
     
                 if(savedGame){
-                    res.json({payload: savedGame, message: "Game updated"});
+                    res.json({payload: game, message: "Game updated"});
                 }else{
                     res.json({error: "Error during updating of the game"});
                 }
