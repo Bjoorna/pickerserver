@@ -66,7 +66,7 @@ class GameController implements Controller{
 
         const week = req.params.week;
 
-        const games = await Game.find({"week": +week}).populate("hometeam").populate("awayteam").populate("favorite");
+        const games = await Game.find({"week": +week}).sort({"time": +1}).populate("hometeam").populate("awayteam").populate("favorite");
 
         if(games){
             res.json({payload: games});
