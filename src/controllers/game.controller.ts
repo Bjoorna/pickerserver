@@ -86,7 +86,8 @@ class GameController implements Controller{
             spread: gameInfo.spread,
             result: gameInfo.result,
             favorite: gameInfo.favorite,
-            time: gameInfo.time
+            time: gameInfo.time,
+            winnerprediction: gameInfo.winnerprediction
         });
 
         res.json({payload: newGame});
@@ -108,7 +109,8 @@ class GameController implements Controller{
                 game.result = gameUpdates.result;
                 game.favorite =  gameUpdates.favorite;
                 game.time = gameUpdates.time;
-    
+                game.winnerprediction = gameUpdates.winnerprediction
+
                 const savedGame = await game.save();
     
                 if(savedGame){

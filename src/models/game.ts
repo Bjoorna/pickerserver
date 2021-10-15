@@ -9,7 +9,8 @@ export interface IGame{
     spread: number | null
     result: Array<number>,
     favorite: ObjectId | null,
-    time?: number
+    time?: number,
+    winnerprediction?: number // TEMP
 }
 
 const gameSchema = new Schema<IGame>({
@@ -19,7 +20,8 @@ const gameSchema = new Schema<IGame>({
     spread: {type: Number, default: null},
     result:[{type: Number, required: true}],
     favorite: {type: Schema.Types.ObjectId, ref: 'Team', default: null},
-    time: {type: Number}
+    time: {type: Number},
+    winnerprediction: {type: Number}
 });
 
 export const Game = model<IGame>("Game", gameSchema);
