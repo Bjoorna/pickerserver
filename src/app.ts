@@ -6,6 +6,7 @@ import AuthController from './controllers/auth.controller';
 import TeamController from './controllers/team.controller';
 import GameController from './controllers/game.controller';
 import UserController from './controllers/user.controller';
+import AdminController from './controllers/admin.controller';
 
 
 class App{
@@ -30,6 +31,9 @@ class App{
 
         const userController = new UserController();
         this.app.use('/', userController.router);
+
+        const adminController = new AdminController();
+        this.app.use('/', adminController.router);
     }
 
     public listen(){
