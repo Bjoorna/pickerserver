@@ -71,9 +71,10 @@ class TeamController implements Controller{
         const existingTeam = await Team.findById(teamId);
 
         if(existingTeam){
-            existingTeam.name = newTeamInfo.name,
-            existingTeam.abbreviation = newTeamInfo.abbreviation,
-            existingTeam.imageurl = newTeamInfo.imageurl
+            existingTeam.name = newTeamInfo.name;
+            existingTeam.abbreviation = newTeamInfo.abbreviation;
+            existingTeam.imageurl = newTeamInfo.imageurl;
+            existingTeam.record = newTeamInfo.record;
 
             const updatedTeam = await existingTeam.save();
             if(updatedTeam){

@@ -5,7 +5,7 @@ export interface ITeam{
     name: string,
     abbreviation: string,
     imageurl: string,
-    record?: Array<number>
+    record: Array<number>
 }
 
 const teamSchema = new Schema<ITeam>({
